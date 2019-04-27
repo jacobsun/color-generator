@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>Color generator</title>
     <style>
         body {
@@ -38,11 +39,27 @@
         .animate {
             animation: slide 1s ease 0s 1;
         }
+        div.link {
+            top: 0;
+            right: 0;
+            position: absolute;
+            z-index: 999;
+        }
+        .link a {
+            color: #eee;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            text-shadow: 0px 2px 1px #333;
+        }
     </style>
 </head>
 
 <body>
-
+    <div class="link">
+        <a href="https://ziox.xyz">Home</a>
+        <a href="https://github.com/jacobsun/color-generator">Source</a>
+    </div>
     <script>
         const dark = ['c', 'f', '6', '9']
         const light = ['a', 'b', 'c', 'd', 'e', 'f']
