@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Color generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            outline: none;
+            appearance: none;
+            --webkit-appearance: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translate(0, 0px);
+            }
+
+            50% {
+                transform: translate(0, -5px);
+            }
+
+            100% {
+                transform: translate(0, 0px);
+            }
+        }
+
+        .animate {
+            animation: slide 1s ease 0s 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        const dark = ['c', 'f', '6', '9']
+        const light = ['a', 'b', 'c', 'd', 'e', 'f']
+        const col = 5
+        const row = 2
+        const width = document.documentElement.clientWidth / col;
+        const height = document.documentElement.clientHeight / row;
+        const upper = elt('div', { class: 'wrapper', style: `overflow:hidden; width: 100%; height: ${height}px` })
+        const bottom = elt('div', { class: 'wrapper', style: `overflow:hidden; width: 100%; height: ${height}px` })
+        for (let i = col - 1; i >= 0; i--) {
+            let ubutton = elt('button', {
+                style: `color: #${i}a${i}a${i}a`
+            }, 'TEXT and 颜色')
+            let uborder = elt('div', {
+                class: 'borders',
+                style: `width: 100%;
+                height: 20px;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                background-color: ${genGray(i + 5)}`
+            })
+            let dborder = elt('div', {
+                class: 'borders',
+                style: `width: 100%;
+                height: 20px;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                background-color: ${genGray(i)}`
+            })
+            let dbutton = elt('button', {
+                style: `color: #${ i }f${ i }f${ i }f;`
+            }, 'TEXT and 颜色')
+            upper.appendChild(elt('div', {
+                class: 'cols',
+                id: `upper-${i}`,
+                style: `float: left;
+                position: relative;
+                width: ${width}px;
+                height: ${height}px;
+                line-height: ${height}px;
+                background-color: ${genLight()};
+                text-align: center;
+                `}, ubutton, uborder))
+            bottom.appendChild(elt('div', {
+                class: 'cols',
+                id: `bottom-${i}`,
+                style: `float: left;
+                position: relative;
+                width: ${width}px;
+                height: ${height}px;
+                line-height: ${height}px;
+                background-color: ${genDark()};
+                text-align: center;
+                `}, dbutton, dborder))
+        }
+        const body = document.querySelector('body')
+        body.appendChild(upper)
+        body.appendChild(bottom)
+
+        function genDark() {
+            let d = ''
+            for (i = 0; i != 3; i++) {
+                let c = dark[randomInt(0, dark.length)]
+                d += c + c
+            }
+            return '#' + d
+        }
+
+        function genLight() {
+            let d = ''
+            for (i = 0; i != 6; i++) {
+                d += light[randomInt(0, light.length)]
+            }
+            return '#' + d
+        }
+        function genGray(base) {
+            let ret = ''
+            for (let i = 0; i != 6; i++) {
+                if (base > 3)
+                    ret += String.fromCharCode(65 + base - 4)
+                else
+                    ret += (6 + base).toString()
+            }
+            return '#' + ret
+        }
+        function randomInt(min, max) {
+            min = Math.ceil(min)
+            max = Math.floor(max)
+            return Math.floor(Math.random() * (max - min)) + min
+        }
+
+        function elt(name, attr = {}, ...text) {
+            const node = document.createElement(name)
+            Object.keys(attr).forEach(k => {
+                node.setAttribute(k, attr[k])
+            })
+            text.forEach(t => {
+                if (typeof t === 'string')
+                    t = document.createTextNode(t)
+                node.appendChild(t)
+            })
+            return node
+        }
+
+        body.appendChild(elt('textarea', {
+            readonly: 'true',
+            style:`position: absolute;
+            top: -99999px;`
+        }))
+        textarea = document.querySelector('textarea')
+        bindDown(window.body, e => {
+            e.target.classList.add('animate')
+            if (e.target.tagName === 'BUTTON') {
+                textarea.value = e.target.style.color
+            }
+            else {
+                textarea.value = e.target.style.backgroundColor
+            }
+            textarea.select()
+            document.execCommand('copy')
+            setTimeout(() => {
+                e.target.classList.remove('animate')
+            }, 3000)
+        })
+        function bindDown (el = window, onDown) {
+            let type = ''
+            // avoid touch and click fired at the same time
+            function down (e) {
+                if (!type) {
+                        type = e.type
+                }
+                if (e.type === type) {
+                        onDown(e)
+                }
+            }
+            el.addEventListener('mouseup', down)
+            el.addEventListener('touchend', down)
+        }
+    </script>
+</body>
+
+</html>
